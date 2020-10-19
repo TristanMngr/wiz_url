@@ -1,0 +1,23 @@
+
+%div
+  .jumbotron.text-center
+    %h1.display-4= 'WizUrl'
+    %p.lead.text-muted= 'An URL shortener'
+
+  .container
+    .row
+      .col-sm-12
+        = form_for(@link_form, url: links_path, remote: true) do |f|
+          .form-row.align-items-center
+            .col-sm-8.my-1
+              %label.sr-only{ for: 'url' }= 'url'
+              = f.text_field :url, class: 'form-control', type: 'text', id: 'url', placeholder: 'https://yoururltoshorten.com/example', autofocus: true
+            .col-sm-4.my-1
+              = f.submit 'Shorten', class: 'btn btn-primary btn-block', type: 'submit'
+          %div.text-danger.js_form_errors
+
+    .row.mt-5
+      .col-sm-12
+        .table-responsive
+          = render 'links_table', links: @links
+

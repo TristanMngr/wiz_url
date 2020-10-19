@@ -1,0 +1,4 @@
+%table.table.table-hover.js_table_link_list
+  %tbody
+    - links.each do |link|
+      = render 'link_row', link: link
