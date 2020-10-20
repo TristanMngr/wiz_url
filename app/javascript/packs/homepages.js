@@ -1,43 +1,50 @@
-console.log("initialise")
-
 $(document).on('turbolinks:load', function() { 
   $('.new_link_form').on('ajax:success', addLinkRow)
-
-  $('.delete_link').on('ajax:success', removeLinkRow)
-
-  // $('.form_errors').text('')
+  $('.js_delete_link').on('ajax:success', removeLinkRow)
 
   function addLinkRow(event) {
-    // In jquery-ujs the code would work with: attributes event, data, status; 
-    // in rails-ujs return only one attribute - event and additional things are accessed through array on event.details
-    
     const linkDatas = event.detail[0]
 
     if ($('.js_list_errors')) {
       $('.js_list_errors').remove()
     }
-    
 
     if (linkDatas.success) {
-      $('.js_table_link_list').prepend(linkDatas.link_row_partial)
+      $('.js_table_link_list').prepend(linkDatas.partial)
+      display_message(linkDatas.message, linkDatas.success)
     } else {
-      $('.js_form_errors').append(linkDatas.form_errors_partial)
+      display_message(linkDatas.partial, linkDatas.success)
     }
 
-    $('.delete_link').on('ajax:success', removeLinkRow)
-  }
-
-  // function addLinkFormError(event) {
-  //   $('.form_errors').text(event.detail[0].errors)
-  // }
-
-  
-
-  function removeLinkRow(event) {
-    const linkRowEl = $(`#${event.detail[0].link_id}.link_row`)
-    if (linkRowEl) {
-      linkRowEl.remove()
-    }
+    $('.js_delete_link').on('ajax:success', removeLinkRow)
   }
 })
+
+function removeLinkRow(event) {
+  const linkDatas = event.detail[0]
+  const linkRowEl = $(`#${linkDatas.link_id}.link_row`)
+
+  if (linkDatas.success && linkRowEl) {
+    display_message(linkDatas.message, linkDatas.success)
+    linkRowEl.remove()
+  } else {
+    display_message(linkDatas.message, linkDatas.success)
+  }
+}
+
+function display_message(message, isSuccess) {
+  messageEl = $("#message")
+  innerMessageEl = $("#inner-message")
+
+  newAlertClass = isSuccess ? 'alert-success' : 'alert-danger'
+  innerMessageEl.removeClass('alert-success alert-danger').addClass(newAlertClass)
+
+  innerMessageEl.empty()
+  innerMessageEl.append(message)
+  messageEl.css("display", "block")
+  setTimeout(function () {
+    messageEl.css("display", "none")
+  }, 3000);
+}
+
 

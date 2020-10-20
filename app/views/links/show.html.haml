@@ -1,2 +1,30 @@
-%container
-  %div= column_chart @graph_link_presenter.build_full_range, @graph_link_presenter.properties
+.container
+  .card.mt-3.mb-4.box-shadow
+    .card-header.text-center
+      %h4.my-0.font-weight-normal= 'Graph click by minute for one hour'
+    .card-body
+      %ul.list-unstyled.mt-3.mb-4
+        %li
+          %span.font-weight-bold= 'Original URL:' 
+          = link_to @graph_link_presenter.link.url, @graph_link_presenter.link.url, target: :_blank, rel: 'noopener'
+        %li
+          %span.font-weight-bold= 'Shortened URL:' 
+          = link_to @graph_link_presenter.link.short, @graph_link_presenter.link.short, target: :_blank, rel: 'noopener'
+      .row.align-items-center.mt-5
+        .col-12
+          = column_chart @graph_link_presenter.build_full_range, @graph_link_presenter.properties
+
+      
+      .row.justify-content-between.align-items-center.mt-5
+        .col-sm-6
+          = link_to 'Back to homepage', root_path
+        .col-sm-6
+          = form_for(@link, url: link_path, method: :get) do |f|
+            .form-row.justify-content-end
+              .col-sm-6.my-1
+                %label.sr-only{ for: 'end_time' }= 'choose a time'
+                %input.form-control{ type: 'datetime-local', value: @graph_link_presenter.end_time_to_string, max: @graph_link_presenter.max_end_time_to_string, id: 'end_time', name: 'end_time' }
+              .col-4.my-1
+                = f.submit 'Submit', class: 'btn btn-primary btn-block', type: 'submit'
+  
+    

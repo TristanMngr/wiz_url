@@ -18,6 +18,8 @@ class LinkForm
     end
   end
 
+  private
+
   def ensure_correct_format
     if url.scan(URI::regexp(%w[http https])).empty?
       errors.add(:url, "It is a not a valid url")

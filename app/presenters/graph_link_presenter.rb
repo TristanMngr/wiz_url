@@ -1,34 +1,50 @@
 class GraphLinkPresenter
-  FRANCE_TIME_ZONE_OFFSET = 2
+  FR_TIME_ZONE_OFFSET = 2
+  GRAPH_RANGE_IN_MINUTES = 60
 
-  def initialize(link:, end_date: Time.now, duration_in_minutes: 60)
+  attr_accessor :link
+
+  def initialize(link:, end_time:)
     @link = link
-    @end_date = end_date
-    @duration_in_minutes = duration_in_minutes
+    @end_time = get_end_time_for(end_time)
   end
 
-  def clicks_by_minutes
-    range_for_data.group("to_char(created_at AT TIME ZONE 'UTC+#{FRANCE_TIME_ZONE_OFFSET}', 'HH24:MI')").count
+  def get_end_time_for(end_time)
+    end_time ? Time.zone.parse(end_time) : Time.zone.now
   end
 
-  def build_full_range
-    init_full_range.merge(clicks_by_minutes).to_a.reverse.to_h
+  def end_time_to_string
+    @_end_time_to_string ||= ::DateTimeConverter.new(date_time: @end_time).to_string
   end
 
-  def init_full_range
-    start_time = (@end_date - @duration_in_minutes.minute).strftime("%H:%M")
-    end_time = @end_date.strftime("%H:%M")
-
-    (start_time..end_time).each_with_object({}) do |minute, hash|
-      hash[minute] = 0
-    end
-  end
-
-  def range_for_data
-    @link.link_clicks.where(created_at: @end_date - @duration_in_minutes.minutes..@end_date)
+  def max_end_time_to_string
+    @_max_end_time_to_string ||= ::DateTimeConverter.new(date_time: Time.zone.now + 1.minute).to_string
   end
 
   def properties
-    return { xtitle: 'minutes', ytitle: "clicks", label: 'clicks', title: @link.url }
+    { xtitle: 'minutes', ytitle: "clicks", label: 'clicks' }
+  end
+
+  def build_full_range
+    @_build_full_range ||= init_full_range.merge(link_clicks_by_minutes_for_range).to_a.reverse.to_h
+  end
+
+  private
+
+  def link_clicks_for_range
+    @link.link_clicks.where(created_at: @end_time - GRAPH_RANGE_IN_MINUTES.minutes..@end_time)
+  end
+
+  def link_clicks_by_minutes_for_range
+    @link_clicks_by_minutes_for_range ||= link_clicks_for_range.group("to_char(created_at AT TIME ZONE 'UTC+#{FR_TIME_ZONE_OFFSET}', 'HH24:MI')").count
+  end
+
+  def init_full_range
+    start_time = (@end_time - GRAPH_RANGE_IN_MINUTES.minute).strftime("%H:%M")
+    end_time = @end_time.strftime("%H:%M")
+
+    @_init_full_range ||= (start_time..end_time).each_with_object({}) do |minute, hash|
+      hash[minute] = 0
+    end
   end
 end
