@@ -4,7 +4,9 @@ class DateTimeConverter
   end
 
   def to_string(format: :long)
-    raise "time param should be a Time instance" unless @date_time.instance_of?(ActiveSupport::TimeWithZone)
+    if !@date_time.instance_of?(ActiveSupport::TimeWithZone)
+      raise "date_time should be an ActiveSupport::TimeWithZone instance"
+    end
 
     case format
     when :long

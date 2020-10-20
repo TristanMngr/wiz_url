@@ -19,12 +19,6 @@
         .col-sm-6
           = link_to 'Back to homepage', root_path
         .col-sm-6
-          = form_for(@link, url: link_path, method: :get) do |f|
-            .form-row.justify-content-end
-              .col-sm-6.my-1
-                %label.sr-only{ for: 'end_time' }= 'choose a time'
-                %input.form-control{ type: 'datetime-local', value: @graph_link_presenter.end_time_to_string, max: @graph_link_presenter.max_end_time_to_string, id: 'end_time', name: 'end_time' }
-              .col-4.my-1
-                = f.submit 'Submit', class: 'btn btn-primary btn-block', type: 'submit'
+          = render 'form', link: @link
   
     
