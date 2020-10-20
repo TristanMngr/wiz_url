@@ -40,10 +40,10 @@ class GraphLinkPresenter
   end
 
   def init_full_range
-    start_time = (@end_time - GRAPH_RANGE_IN_MINUTES.minute).strftime("%H:%M")
-    end_time = @end_time.strftime("%H:%M")
+    start_time_to_string = ::DateTimeConverter.new(date_time: @end_time - GRAPH_RANGE_IN_MINUTES.minute).to_string(format: :short)
+    end_time_to_string = ::DateTimeConverter.new(date_time: @end_time).to_string(format: :short)
 
-    @_init_full_range ||= (start_time..end_time).each_with_object({}) do |minute, hash|
+    @_init_full_range ||= (start_time_to_string..end_time_to_string).each_with_object({}) do |minute, hash|
       hash[minute] = 0
     end
   end

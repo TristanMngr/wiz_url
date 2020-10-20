@@ -3,7 +3,7 @@ class HomepagesController < ApplicationController
   before_action :prevent_browser_caching, only: [:index]
 
   def index
-    @links = Link.all.order(created_at: :desc)
+    @links = Link.order(created_at: :desc)
   end
 
   def link_form

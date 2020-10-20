@@ -3,6 +3,6 @@ Rails.application.routes.draw do
 
   get '/:slug', to: 'links#short', as: :short
 
-  resources :links, only: [:show, :index, :destroy, :create]
+  resources :links, only: [:show, :destroy, :create]
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

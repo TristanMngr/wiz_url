@@ -15,10 +15,6 @@ class LinksController < ApplicationController
     @graph_link_presenter = ::GraphLinkPresenter.new(link: @link, end_time: params[:end_time])
   end
 
-  def index
-    @links = Link.all.order(:created_at, :desc)
-  end
-
   def destroy
     if @link.destroy
       render json: {
